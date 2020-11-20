@@ -14,4 +14,6 @@ public interface ProductService {
     void delete(int id);
 
     void updata(Product p);
+
+    void setFirstProductImage(Product p);
 }
