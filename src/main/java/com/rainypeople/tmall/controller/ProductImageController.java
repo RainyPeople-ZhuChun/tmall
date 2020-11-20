@@ -48,6 +48,7 @@ public class ProductImageController {
         String imageFolder_small=null;
         String imageFolder_middle=null;
         if(ProductImageService.type_single.equals(pi.getType())){
+            //获取对应的文件夹
             imageFolder= session.getServletContext().getRealPath("img/productSingle");
             imageFolder_small= session.getServletContext().getRealPath("img/productSingle_small");
             imageFolder_middle= session.getServletContext().getRealPath("img/productSingle_middle");
@@ -59,7 +60,9 @@ public class ProductImageController {
         File f = new File(imageFolder, fileName);
         f.getParentFile().mkdirs();
         try {
+            //通过UploadedImageFile 把浏览器传递过来的图片保存在上述指定的位置
             uploadedImageFile.getImage().transferTo(f);
+            //通过ImageUtil.change2jpg(file); 确保图片格式一定是jpg，而不仅仅是后缀名是jpg.
             BufferedImage img = ImageUtil.change2jpg(f);
             ImageIO.write(img, "jpg", f);
 
