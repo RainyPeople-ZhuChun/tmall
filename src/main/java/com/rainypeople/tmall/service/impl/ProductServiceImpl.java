@@ -39,4 +39,9 @@ public class ProductServiceImpl implements ProductService {
     public void delete(int id) {
         productMapper.deleteByPrimaryKey(id);
     }
+
+    @Override
+    public void updata(Product p) {
+        productMapper.updateByPrimaryKey(p);
+    }
 }

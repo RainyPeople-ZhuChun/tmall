@@ -56,5 +56,39 @@ public class ProductController {
         return "redirect:/admin_product_list?cid="+p.getCid();
     }
 
+    @RequestMapping("admin_product_edit")
+    public String edit(int id,Model model){
+        Product p = productService.getById(id);
+        Category c = categoryService.getById(p.getCid());
+        p.setCategory(c);
 
+        model.addAttribute("p",p);
+        return "admin/editProduct";
+    }
+
+    @RequestMapping("admin_product_update")
+    public String updata(Model model,Product p){
+        productService.updata(p);
+        return "redirect:/admin_product_list?cid="+p.getCid();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
