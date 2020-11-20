@@ -25,10 +25,11 @@ public class PropertyController {
 
     @RequestMapping("admin_property_list")
     public String list(Model model, Page page,int cid){
-        List<Property> ps=propertyService.list(cid);
         Category c=categoryService.getById(cid);
 
         PageHelper.offsetPage(page.getStart(),page.getCount());
+        List<Property> ps=propertyService.list(cid);
+
         int total = (int) new PageInfo<>(ps).getTotal();
         page.setTotal(total);
         page.setParam("&cid="+c.getId());
