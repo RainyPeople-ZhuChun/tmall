@@ -1,0 +1,37 @@
+package com.rainypeople.tmall.controller;
+
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.rainypeople.tmall.pojo.Property;
+import com.rainypeople.tmall.service.CategoryService;
+import com.rainypeople.tmall.service.PropertyService;
+import com.rainypeople.tmall.util.Page;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+
+@Controller
+public class PropertyController {
+
+    @Autowired
+    private PropertyService propertyService;
+    @Autowired
+    private CategoryService categoryService;
+
+    @RequestMapping("admin_property_list")
+    public String list(Model model, Page page){
+        List<Property> ps=propertyService.list();
+
+        PageHelper.offsetPage(page.getStart(),page.getCount());
+        int total = (int) new PageInfo<>(ps).getTotal();
+        page.setTotal(total);
+
+        model.addAttribute("ps",ps);
+        model.addAttribute("total",total);
+        return "admin/listProperty";
+    }
+}

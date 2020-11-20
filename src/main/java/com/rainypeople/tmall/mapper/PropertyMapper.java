@@ -18,4 +18,6 @@ public interface PropertyMapper {
     int updateByPrimaryKeySelective(Property record);
 
     int updateByPrimaryKey(Property record);
+
+    List<Property> list();
 }

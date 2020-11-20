@@ -104,4 +104,9 @@
       name = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="list" resultType="Property">
+
+    select id,cid,name from  property order by id  desc
+  </select>
 </mapper>
