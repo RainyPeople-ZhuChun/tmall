@@ -105,4 +105,9 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <select id="list" resultType="Property">
+
+    select id,cid,name from property where cid=#{cid}
+  </select>
+
 </mapper>
