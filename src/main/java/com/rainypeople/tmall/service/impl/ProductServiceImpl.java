@@ -1,6 +1,7 @@
 package com.rainypeople.tmall.service.impl;
 
 import com.rainypeople.tmall.mapper.ProductMapper;
+import com.rainypeople.tmall.pojo.Category;
 import com.rainypeople.tmall.pojo.Product;
 import com.rainypeople.tmall.pojo.ProductExample;
 import com.rainypeople.tmall.pojo.ProductImage;
@@ -10,6 +11,7 @@ import com.rainypeople.tmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,6 +62,47 @@ public class ProductServiceImpl implements ProductService {
             ProductImage pi = pis.get(0);
             p.setFirstProductImage(pi);
         }
+    }
+
+    @Override
+    public void fill(List<Category> cs) {
+        for(Category c:cs){
+            fill(c);
+        }
+    }
+
+    private void fill(Category c) {
+        int cid=c.getId();
+        ProductExample example=new ProductExample();
+        example.createCriteria().andCidEqualTo(cid);
+        example.setOrderByClause("id desc");
+        List<Product> products = productMapper.selectByExample(example);
+        c.setProducts(products);
+    }
+
+    @Override
+    public void fillByRow(List<Category> cs) {
+        for (Category c:cs){
+            fillByRow(c);
+        }
+    }
+
+    private void fillByRow(Category c) {
+        //productNumberEachRow是将products集合分为8个一组，方便首页分组
+        int productNumberEachRow=8;
+        List<Product> products =c.getProducts();
+        List<List<Product>> list=new ArrayList<>();
+        //将products分组，每个组8个product信息
+        for(int i=0;i<products.size();i+=productNumberEachRow){
+            //计数，比如0到7，8-15将products分为8个一组
+            int size=i+productNumberEachRow;
+            //判断最后一页的个数
+            size=size>products.size()?products.size():size;
+            List<Product> productsOfEachRow=products.subList(i,size);
+            list.add(productsOfEachRow);
+        }
+        setFirstProductImage(products);
+        c.setProductsByRow(list);
     }
 
     public void setFirstProductImage(List<Product> ps) {
