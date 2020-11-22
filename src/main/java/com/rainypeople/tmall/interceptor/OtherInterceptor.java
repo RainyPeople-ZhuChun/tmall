@@ -1,16 +1,25 @@
 package com.rainypeople.tmall.interceptor;
 
+import com.rainypeople.tmall.pojo.Category;
+import com.rainypeople.tmall.pojo.OrderItem;
 import com.rainypeople.tmall.pojo.User;
-import org.apache.commons.lang.StringUtils;
+import com.rainypeople.tmall.service.CategoryService;
+import com.rainypeople.tmall.service.OrderItemService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
+import java.util.List;
 
-public class LoginInterceptor extends HandlerInterceptorAdapter {
+public class OtherInterceptor extends HandlerInterceptorAdapter {
+
+    @Autowired
+    CategoryService categoryService;
+    @Autowired
+    OrderItemService orderItemService;
 
     /**
      * 在业务处理器处理请求之前被调用
@@ -25,38 +34,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      */
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-
-        HttpSession session=request.getSession();
-        //获取/tmall_ssm域名
-        String contextPath = session.getServletContext().getContextPath();
-        //不需要登录即可访问的地址，直接放行
-        String[] noNeedAuthPage=new String[]{
-                "home",
-                "checkLogin",
-                "register",
-                "loginAjax",
-                "login",
-                "product",
-                "category",
-                "search"
-        };
-        String uri=request.getRequestURI();
-        //把/tmall_ssm去除
-        uri=StringUtils.remove(uri,contextPath);
-        //如果访问的路径是以/fore开始的
-        if (uri.startsWith("/fore")){
-            //把/fore前缀去除
-            uri=StringUtils.substringAfterLast(uri,"/fore");
-            //判断是否属于无需登录直接放行的路径，假如不是重定向登录界面，拒绝放行
-            if (!Arrays.asList(noNeedAuthPage).contains(uri)){
-                User user= (User) session.getAttribute("user");
-                if (null==user){
-                    response.sendRedirect("loginPage");
-                    return false;
-                }
-            }
-        }
         return true;
+
     }
 
     /**
@@ -67,6 +46,26 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request,
                            HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) throws Exception {
+        /*这里是获取分类集合信息，用于放在搜索栏下面*/
+        List<Category> cs = categoryService.list();
+        request.getSession().setAttribute("cs", cs);
+
+        /*这里是获取当前的contextPath:tmall_ssm,用与放在左上角那个变形金刚，点击之后才能够跳转到首页，否则点击之后也仅仅停留在当前页面*/
+        HttpSession session = request.getSession();
+        String contextPath=session.getServletContext().getContextPath();
+        request.getSession().setAttribute("contextPath", contextPath+"/forehome");
+
+        /*这里是获取购物车中一共有多少数量*/
+        User user =(User)  session.getAttribute("user");
+        int  cartTotalItemNumber = 0;
+        if(null!=user) {
+            List<OrderItem> ois = orderItemService.listByUser(user.getId());
+            for (OrderItem oi : ois) {
+                cartTotalItemNumber+=oi.getNumber();
+            }
+
+        }
+        request.getSession().setAttribute("cartTotalItemNumber", cartTotalItemNumber);
 
     }
 
@@ -80,7 +79,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                                 HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
 
+//        System.out.println("afterCompletion(), 在访问视图之后被调用");
     }
 
 }
-
