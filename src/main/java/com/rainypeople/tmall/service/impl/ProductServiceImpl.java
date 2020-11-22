@@ -1,8 +1,10 @@
 package com.rainypeople.tmall.service.impl;
 
-import com.rainypeople.tmall.mapper.OrderItemMapper;
 import com.rainypeople.tmall.mapper.ProductMapper;
-import com.rainypeople.tmall.pojo.*;
+import com.rainypeople.tmall.pojo.Category;
+import com.rainypeople.tmall.pojo.Product;
+import com.rainypeople.tmall.pojo.ProductExample;
+import com.rainypeople.tmall.pojo.ProductImage;
 import com.rainypeople.tmall.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ public class ProductServiceImpl implements ProductService {
     OrderItemService orderItemService;
     @Autowired
     ReviewService reviewService;
+    @Autowired
+    ProductService productService;
 
 
     @Override
@@ -71,13 +75,14 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private void fill(Category c) {
+    public void fill(Category c) {
         int cid=c.getId();
         ProductExample example=new ProductExample();
         example.createCriteria().andCidEqualTo(cid);
         example.setOrderByClause("id desc");
-        List<Product> products = productMapper.selectByExample(example);
-        c.setProducts(products);
+        List<Product> ps = productMapper.selectByExample(example);
+        setFirstProductImage(ps);
+        c.setProducts(ps);
     }
 
     @Override
