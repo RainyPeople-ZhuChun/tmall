@@ -7,6 +7,7 @@ import com.rainypeople.tmall.pojo.OrderItem;
 import com.rainypeople.tmall.pojo.OrderItemExample;
 import com.rainypeople.tmall.pojo.Product;
 import com.rainypeople.tmall.service.OrderItemService;
+import com.rainypeople.tmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,8 @@ public class OrderItemServiceImpl implements OrderItemService {
     private OrderItemMapper orderItemMapper;
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    ProductService productService;
 
     @Override
     public void fill(List<Order> os) {
@@ -64,7 +67,25 @@ public class OrderItemServiceImpl implements OrderItemService {
         example.createCriteria().andIdEqualTo(id);
         List<OrderItem> ois = orderItemMapper.selectByExample(example);
         setProduct(ois);
+        for (OrderItem oi:ois){
+            Product p = oi.getProduct();
+            productService.setFirstProductImage(p);
+        }
         return ois.get(0);
+    }
+
+    @Override
+    public List<OrderItem> listByUser(Integer id) {
+        OrderItemExample example=new OrderItemExample();
+        example.createCriteria().andUidEqualTo(id);
+        example.setOrderByClause("id desc");
+        List<OrderItem> ois = orderItemMapper.selectByExample(example);
+        setProduct(ois);
+        for (OrderItem oi:ois){
+            Product p = oi.getProduct();
+            productService.setFirstProductImage(p);
+        }
+        return ois;
     }
 
 

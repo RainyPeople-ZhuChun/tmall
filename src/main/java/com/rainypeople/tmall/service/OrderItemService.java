@@ -13,4 +13,6 @@ public interface OrderItemService {
     void add(OrderItem oi);
 
     OrderItem getById(Integer id);
+
+    List<OrderItem> listByUser(Integer id);
 }

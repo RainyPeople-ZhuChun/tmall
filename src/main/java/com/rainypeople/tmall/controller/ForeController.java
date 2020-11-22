@@ -217,4 +217,12 @@ public class ForeController {
         orderItemService.add(oi);
         return "success";
     }
+
+    @RequestMapping("forecart")
+    public String cart(HttpSession session,Model model){
+        User user = (User) session.getAttribute("user");
+        List<OrderItem> ois=orderItemService.listByUser(user.getId());
+        model.addAttribute("ois",ois);
+        return "fore/cart";
+    }
 }
