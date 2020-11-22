@@ -205,4 +205,16 @@ public class ForeController {
 
         return  "fore/buy";
     }
+
+    @RequestMapping("foreaddCart")
+    @ResponseBody
+    public String addCart(int pid,int num,HttpSession session){
+        User user= (User) session.getAttribute("user");
+        OrderItem oi=new OrderItem();
+        oi.setUid(user.getId());
+        oi.setPid(pid);
+        oi.setNumber(num);
+        orderItemService.add(oi);
+        return "success";
+    }
 }
