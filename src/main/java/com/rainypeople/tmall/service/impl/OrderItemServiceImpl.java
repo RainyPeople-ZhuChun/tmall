@@ -41,6 +41,25 @@ public class OrderItemServiceImpl implements OrderItemService {
         return saleCount;
     }
 
+    @Override
+    public void add(OrderItem oi) {
+        OrderItemExample example=new OrderItemExample();
+        example.createCriteria().andPidEqualTo(oi.getPid()).andUidEqualTo(oi.getUid()).andOidIsNull();
+        List<OrderItem> ois = orderItemMapper.selectByExample(example);
+        if (!ois.isEmpty()){
+            OrderItem orderItem = ois.get(0);
+            int number=orderItem.getNumber()+oi.getNumber();
+            orderItem.setNumber(number);
+            orderItemMapper.updateByPrimaryKey(orderItem);
+            oi.setId(orderItem.getId());
+            System.out.println(oi.getId());
+        }else {
+            orderItemMapper.insert(oi);
+            System.out.println(oi.getId());
+        }
+
+    }
+
 
     private void fill(Order o) {
         int oid=o.getId();

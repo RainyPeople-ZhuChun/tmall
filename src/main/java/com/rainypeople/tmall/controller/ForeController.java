@@ -174,4 +174,17 @@ public class ForeController {
         model.addAttribute("ps",ps);
         return "fore/searchResult";
     }
+
+    @RequestMapping("forebuyone")
+    public String buyone(int pid,int num,HttpSession session){
+        OrderItem oi=new OrderItem();
+        oi.setPid(pid);
+        oi.setNumber(num);
+        User user= (User) session.getAttribute("user");
+        Integer uid = user.getId();
+        oi.setUid(uid);
+        orderItemService.add(oi);
+        System.out.println(oi.getId());
+        return "redirect:forebuy?oiid="+oi.getId();
+    }
 }
