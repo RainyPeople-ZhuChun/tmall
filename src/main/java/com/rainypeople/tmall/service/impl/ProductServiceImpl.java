@@ -86,6 +86,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> search(String keyword) {
+        ProductExample example=new ProductExample();
+        example.createCriteria().andNameLike("%"+keyword+"%");
+        example.setOrderByClause("id desc");
+        List<Product> ps = productMapper.selectByExample(example);
+        setFirstProductImage(ps);
+        setCategory(ps);
+        return ps;
+    }
+
+    public void setCategory(List<Product> ps) {
+        for (Product p:ps){
+            setCategory(p);
+        }
+    }
+
+    public void setCategory(Product p) {
+        Integer cid = p.getCid();
+        Category c = categoryService.getById(cid);
+        p.setCategory(c);
+    }
+
+    @Override
     public void fillByRow(List<Category> cs) {
         for (Category c:cs){
             fillByRow(c);
