@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -184,7 +185,24 @@ public class ForeController {
         Integer uid = user.getId();
         oi.setUid(uid);
         orderItemService.add(oi);
-        System.out.println(oi.getId());
         return "redirect:forebuy?oiid="+oi.getId();
+    }
+
+    @RequestMapping("forebuy")
+    public String buy(Model model,String[] oiid,HttpSession session){
+        List<OrderItem> ois=new ArrayList<>();
+        int total=0;
+
+        for (String str:oiid){
+            Integer id=Integer.valueOf(str);
+            OrderItem oi=orderItemService.getById(id);
+            total+=oi.getNumber()*oi.getProduct().getPromotePrice();
+            ois.add(oi);
+        }
+
+        model.addAttribute("ois",ois);
+        model.addAttribute("total",total);
+
+        return  "fore/buy";
     }
 }

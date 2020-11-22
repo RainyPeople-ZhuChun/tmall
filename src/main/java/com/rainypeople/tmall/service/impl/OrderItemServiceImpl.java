@@ -52,12 +52,19 @@ public class OrderItemServiceImpl implements OrderItemService {
             orderItem.setNumber(number);
             orderItemMapper.updateByPrimaryKey(orderItem);
             oi.setId(orderItem.getId());
-            System.out.println(oi.getId());
         }else {
             orderItemMapper.insert(oi);
-            System.out.println(oi.getId());
         }
 
+    }
+
+    @Override
+    public OrderItem getById(Integer id) {
+        OrderItemExample example=new OrderItemExample();
+        example.createCriteria().andIdEqualTo(id);
+        List<OrderItem> ois = orderItemMapper.selectByExample(example);
+        setProduct(ois);
+        return ois.get(0);
     }
 
 

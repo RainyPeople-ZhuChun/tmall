@@ -11,4 +11,6 @@ public interface OrderItemService {
     int getSaleCount(Integer id);
 
     void add(OrderItem oi);
+
+    OrderItem getById(Integer id);
 }
