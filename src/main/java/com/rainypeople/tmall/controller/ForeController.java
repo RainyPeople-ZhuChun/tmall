@@ -1,9 +1,7 @@
 package com.rainypeople.tmall.controller;
 
-import com.rainypeople.tmall.pojo.Category;
-import com.rainypeople.tmall.pojo.User;
+import com.rainypeople.tmall.pojo.*;
 import com.rainypeople.tmall.service.*;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +29,8 @@ public class ForeController {
     OrderService orderService;
     @Autowired
     OrderItemService orderItemService;
+    @Autowired
+    ReviewService reviewService;
 
     @RequestMapping("forehome")
     public String home(Model model){
@@ -81,6 +81,30 @@ public class ForeController {
     public String loginOut(HttpSession session){
         session.removeAttribute("user");
         return "redirect:/forehome";
+    }
+
+    @RequestMapping("foreproduct")
+    public String product(int pid,Model model){
+        Product p = productService.getById(pid);
+
+        Category category = categoryService.getById(p.getCid());
+        p.setCategory(category);
+        
+        List<ProductImage> productSingleImages = productImageService.list(pid, productImageService.type_single);
+        List<ProductImage> productDetailImages = productImageService.list(pid, productImageService.type_detail);
+        p.setProductSingleImages(productSingleImages);
+        p.setProductDetailImages(productDetailImages);
+        productService.setFirstProductImage(p);
+
+        List<PropertyValue> pvs = propertyValueService.list(p.getId());
+        List<Review> reviews = reviewService.list(pid);
+        productService.setSaleAndReviewNumber(p);
+
+        model.addAttribute("p",p);
+        model.addAttribute("pvs",pvs);
+        model.addAttribute("reviews",reviews);
+
+        return "fore/product";
     }
 
 }

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface OrderItemService {
     void fill(List<Order> os);
+
+    int getSaleCount(Integer id);
 }

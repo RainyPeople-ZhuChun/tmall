@@ -1,13 +1,9 @@
 package com.rainypeople.tmall.service.impl;
 
+import com.rainypeople.tmall.mapper.OrderItemMapper;
 import com.rainypeople.tmall.mapper.ProductMapper;
-import com.rainypeople.tmall.pojo.Category;
-import com.rainypeople.tmall.pojo.Product;
-import com.rainypeople.tmall.pojo.ProductExample;
-import com.rainypeople.tmall.pojo.ProductImage;
-import com.rainypeople.tmall.service.CategoryService;
-import com.rainypeople.tmall.service.ProductImageService;
-import com.rainypeople.tmall.service.ProductService;
+import com.rainypeople.tmall.pojo.*;
+import com.rainypeople.tmall.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +19,10 @@ public class ProductServiceImpl implements ProductService {
     CategoryService categoryService;
     @Autowired
     ProductImageService productImageService;
+    @Autowired
+    OrderItemService orderItemService;
+    @Autowired
+    ReviewService reviewService;
 
 
     @Override
@@ -84,6 +84,23 @@ public class ProductServiceImpl implements ProductService {
     public void fillByRow(List<Category> cs) {
         for (Category c:cs){
             fillByRow(c);
+        }
+    }
+
+    @Override
+    public void setSaleAndReviewNumber(Product p) {
+        int pid=p.getId();
+        int saleCount=orderItemService.getSaleCount(pid);
+        p.setSaleCount(saleCount);
+
+        int reviewCount=reviewService.getReviewCount(pid);
+        p.setReviewCount(reviewCount);
+    }
+
+    @Override
+    public void setSaleAndReviewNumber(List<Product> ps) {
+        for (Product p:ps){
+            setSaleAndReviewNumber(p);
         }
     }
 
