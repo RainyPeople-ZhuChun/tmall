@@ -225,4 +225,30 @@ public class ForeController {
         model.addAttribute("ois",ois);
         return "fore/cart";
     }
+
+    @RequestMapping("forechangeOrderItem")
+    @ResponseBody
+    public String changeOrderItem(int pid,int number,HttpSession session){
+        User user= (User) session.getAttribute("user");
+        if (null==user){
+            return "fail";
+        }
+        OrderItem oi=new OrderItem();
+        oi.setPid(pid);
+        oi.setNumber(number);
+        oi.setUid(user.getId());
+        orderItemService.changeOrderItem(oi);
+        return "success";
+    }
+
+    @RequestMapping("foredeleteOrderItem")
+    @ResponseBody
+    public String deleteOrderItem(int oiid,HttpSession session){
+        User user= (User) session.getAttribute("user");
+        if (null==user){
+            return "fail";
+        }
+        orderItemService.deleteOrderItem(oiid);
+        return "success";
+    }
 }

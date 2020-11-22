@@ -88,6 +88,22 @@ public class OrderItemServiceImpl implements OrderItemService {
         return ois;
     }
 
+    @Override
+    public void changeOrderItem(OrderItem oi) {
+        OrderItemExample example=new OrderItemExample();
+        example.createCriteria().andPidEqualTo(oi.getPid()).andUidEqualTo(oi.getUid()).andOidIsNull();
+        List<OrderItem> ois = orderItemMapper.selectByExample(example);
+        OrderItem orderItem = ois.get(0);
+        System.out.println(orderItem.getId());
+        oi.setId(orderItem.getId());
+        orderItemMapper.updateByPrimaryKey(oi);
+    }
+
+    @Override
+    public void deleteOrderItem(int oiid) {
+        orderItemMapper.deleteByPrimaryKey(oiid);
+    }
+
 
     private void fill(Order o) {
         int oid=o.getId();

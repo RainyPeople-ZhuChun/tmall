@@ -15,4 +15,8 @@ public interface OrderItemService {
     OrderItem getById(Integer id);
 
     List<OrderItem> listByUser(Integer id);
+
+    void changeOrderItem(OrderItem oi);
+
+    void deleteOrderItem(int oiid);
 }
