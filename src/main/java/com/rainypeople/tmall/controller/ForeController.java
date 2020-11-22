@@ -131,4 +131,6 @@ public class ForeController {
         session.setAttribute("user",user);
         return "success";
     }
+
+
 }
