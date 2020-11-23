@@ -70,6 +70,15 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.updateByPrimaryKeySelective(o);
     }
 
+    @Override
+    public List<Order> list(Integer uid, String delete) {
+        OrderExample example=new OrderExample();
+        example.createCriteria().andUidEqualTo(uid).andStatusNotEqualTo(delete);
+        example.setOrderByClause("id desc");
+        List<Order> os = orderMapper.selectByExample(example);
+        return os;
+    }
+
     public void add(Order order) {
         orderMapper.insert(order);
     }

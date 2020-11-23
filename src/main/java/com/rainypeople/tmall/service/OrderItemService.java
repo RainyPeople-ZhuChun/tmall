@@ -21,4 +21,6 @@ public interface OrderItemService {
     void deleteOrderItem(int oiid);
 
     void updata(OrderItem oi);
+
+    void fill(Order o);
 }

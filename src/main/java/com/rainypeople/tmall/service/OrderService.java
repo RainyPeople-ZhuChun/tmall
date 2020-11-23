@@ -23,4 +23,6 @@ public interface OrderService {
     Order get(int oid);
 
     void edit(Order o);
+
+    List<Order> list(Integer uid, String delete);
 }

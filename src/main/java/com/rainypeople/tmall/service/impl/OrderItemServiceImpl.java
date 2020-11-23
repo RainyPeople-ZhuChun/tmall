@@ -109,7 +109,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
 
-    private void fill(Order o) {
+    public void fill(Order o) {
         int oid=o.getId();
         OrderItemExample example=new OrderItemExample();
         example.createCriteria().andOidEqualTo(oid);
@@ -138,8 +138,11 @@ public class OrderItemServiceImpl implements OrderItemService {
     private void setProduct(OrderItem oi) {
         int pid=oi.getPid();
         Product product = productMapper.selectByPrimaryKey(pid);
+        productService.setFirstProductImage(product);
         oi.setProduct(product);
     }
+
+
 
 
 }

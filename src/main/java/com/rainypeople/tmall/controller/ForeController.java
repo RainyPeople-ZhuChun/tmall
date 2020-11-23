@@ -15,7 +15,10 @@ import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 public class ForeController {
@@ -276,4 +279,45 @@ public class ForeController {
         model.addAttribute("o",o);
         return "fore/payed";
     }
+
+    @RequestMapping("forebought")
+    public String bought(Model model,HttpSession session){
+        User user = (User) session.getAttribute("user");
+        List<Order> os=orderService.list(user.getId(),orderService.delete);
+        for (Order o:os){
+            orderItemService.fill(os);
+        }
+        model.addAttribute("os",os);
+        return "fore/bought";
+    }
+
+    @RequestMapping("foreconfirmPay")
+    public String confirmPay(Model model,int oid){
+        Order o = orderService.get(oid);
+        orderItemService.fill(o);
+
+        model.addAttribute("o",o);
+        return "fore/confirmPay";
+    }
+
+    @RequestMapping("foreorderConfirmed")
+    public String orderConfirmed(int oid){
+        Order order = orderService.get(oid);
+        order.setConfirmDate(new Date());
+        order.setStatus(orderService.waitReview);
+        orderService.edit(order);
+        return "fore/orderConfirmed";
+    }
+
+    @RequestMapping("foredeleteOrder")
+    @ResponseBody
+    public String deleteOrder(int oid){
+        Order order = orderService.get(oid);
+        order.setStatus(orderService.delete);
+        orderService.edit(order);
+        return "success";
+    }
+
+
 }
+
