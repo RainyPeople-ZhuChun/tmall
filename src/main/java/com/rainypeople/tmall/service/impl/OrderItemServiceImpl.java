@@ -2,15 +2,15 @@ package com.rainypeople.tmall.service.impl;
 
 import com.rainypeople.tmall.mapper.OrderItemMapper;
 import com.rainypeople.tmall.mapper.ProductMapper;
-import com.rainypeople.tmall.pojo.Order;
-import com.rainypeople.tmall.pojo.OrderItem;
-import com.rainypeople.tmall.pojo.OrderItemExample;
-import com.rainypeople.tmall.pojo.Product;
+import com.rainypeople.tmall.pojo.*;
 import com.rainypeople.tmall.service.OrderItemService;
 import com.rainypeople.tmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
@@ -77,7 +77,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public List<OrderItem> listByUser(Integer id) {
         OrderItemExample example=new OrderItemExample();
-        example.createCriteria().andUidEqualTo(id);
+        example.createCriteria().andUidEqualTo(id).andOidIsNull();
         example.setOrderByClause("id desc");
         List<OrderItem> ois = orderItemMapper.selectByExample(example);
         setProduct(ois);
@@ -94,7 +94,6 @@ public class OrderItemServiceImpl implements OrderItemService {
         example.createCriteria().andPidEqualTo(oi.getPid()).andUidEqualTo(oi.getUid()).andOidIsNull();
         List<OrderItem> ois = orderItemMapper.selectByExample(example);
         OrderItem orderItem = ois.get(0);
-        System.out.println(orderItem.getId());
         oi.setId(orderItem.getId());
         orderItemMapper.updateByPrimaryKey(oi);
     }
@@ -102,6 +101,11 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public void deleteOrderItem(int oiid) {
         orderItemMapper.deleteByPrimaryKey(oiid);
+    }
+
+    @Override
+    public void updata(OrderItem oi) {
+        orderItemMapper.updateByPrimaryKey(oi);
     }
 
 
@@ -136,4 +140,6 @@ public class OrderItemServiceImpl implements OrderItemService {
         Product product = productMapper.selectByPrimaryKey(pid);
         oi.setProduct(product);
     }
+
+
 }

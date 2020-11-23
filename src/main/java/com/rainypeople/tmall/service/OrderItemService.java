@@ -19,4 +19,6 @@ public interface OrderItemService {
     void changeOrderItem(OrderItem oi);
 
     void deleteOrderItem(int oiid);
+
+    void updata(OrderItem oi);
 }

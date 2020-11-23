@@ -1,6 +1,7 @@
 package com.rainypeople.tmall.service;
 
 import com.rainypeople.tmall.pojo.Order;
+import com.rainypeople.tmall.pojo.OrderItem;
 
 import java.util.List;
 
@@ -16,4 +17,10 @@ public interface OrderService {
 
 
     void updata(Order o);
+
+    float add(List<OrderItem> ois, Order order);
+
+    Order get(int oid);
+
+    void edit(Order o);
 }
