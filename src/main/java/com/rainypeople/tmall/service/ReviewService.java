@@ -8,4 +8,6 @@ public interface ReviewService {
     List<Review> list(int pid);
 
     int getReviewCount(int pid);
+
+    void add(Review review);
 }

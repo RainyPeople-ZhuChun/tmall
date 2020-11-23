@@ -318,6 +318,37 @@ public class ForeController {
         return "success";
     }
 
+    @RequestMapping("forereview")
+    public String review(int oid,Model model){
+        Order o = orderService.get(oid);
+        orderItemService.fill(o);
+        Product p = o.getOrderItems().get(0).getProduct();
+        List<Review> reviews=reviewService.list(p.getId());
+        productService.setSaleAndReviewNumber(p);
 
+        model.addAttribute("o",o);
+        model.addAttribute("p",p);
+        model.addAttribute("reviews",reviews);
+
+        return "fore/review";
+    }
+
+    @RequestMapping("foredoreview")
+    public String doReview(int pid,int oid,String content,HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        Review review = new Review();
+        review.setUid(user.getId());
+        review.setPid(pid);
+        review.setCreateDate(new Date());
+        content = HtmlUtils.htmlEscape(content);
+        review.setContent(content);
+        reviewService.add(review);
+
+        Order o = orderService.get(oid);
+        o.setStatus(orderService.finish);
+        orderService.edit(o);
+
+        return "redirect:forereview?oid="+oid+"&showonly=true";
+    }
 }
 

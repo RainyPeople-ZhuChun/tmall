@@ -39,6 +39,11 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewCount;
     }
 
+    @Override
+    public void add(Review review) {
+        reviewMapper.insert(review);
+    }
+
     private void setUser(List<Review> reviews) {
         for (Review review:reviews){
             setUser(review);
